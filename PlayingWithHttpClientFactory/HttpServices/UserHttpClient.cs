@@ -15,7 +15,11 @@ namespace PlayingWithHttpClientFactory.HttpServices
     {
       _client = client;
 
+      // Configure the HttpClient here or outside in the Startup.ConfigureServices.
       _client.BaseAddress = new Uri("http://localhost:5000");
+
+      // You can set also some default settings, like authorization.
+      //_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("JWT", "token");
     }
 
     public async Task<IEnumerable<string>> GetUsersAsync()
