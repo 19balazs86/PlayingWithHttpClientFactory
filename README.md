@@ -1,6 +1,6 @@
 # Playing with HttpClientFactory
 
-This small application is an example to **use the built-in [HttpClientFactory](https://docs.microsoft.com/en-ie/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.1 "HttpClientFactory") ** in ASP.NET Core.
+This small application is an example to use the built-in [HttpClientFactory](https://docs.microsoft.com/en-ie/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.1 "HttpClientFactory") in ASP.NET Core.
 HttpClientFactory provides a central location to configure and create HttpClient instances.
 
 This concept can be useful to initiate 3rd party services call or even your microservices can call each other (be careful with the dependency).
