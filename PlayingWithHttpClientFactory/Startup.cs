@@ -29,7 +29,7 @@ namespace PlayingWithHttpClientFactory
 
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
       // Add: MessageHandler(s) to the DI container.
       services.AddTransient<TestMessageHandler>();
