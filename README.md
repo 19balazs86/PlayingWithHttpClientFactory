@@ -10,7 +10,10 @@ Other useful information: [Polly and HttpClientFactory](https://github.com/App-v
 
 In the example, I use a timeout policy to cancel a long running call. You can find a solution to use CancellationToken in case, if the client side application cancel the request.
 
-According to the Microsoft description, seems easy, but there are numerous of things, which you can handle.
+According to the Microsoft description, seems easy, but there are numerous of things, which you should handle.
+
+In the example, I did not use the [Flurl](https://flurl.io "Flurl") as fluent URL builder and HTTP client library. Worth to check the following article: [Consuming GitHub API (REST) With Flurl.](https://code-maze.com/consuming-github-api-rest-with-flurl "Consuming GitHub API (REST) With Flurl") 
+
 You can find some inline comments in the code, like this:
 ```csharp
 public void ConfigureServices(IServiceCollection services)
