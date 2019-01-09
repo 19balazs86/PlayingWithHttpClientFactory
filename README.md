@@ -12,6 +12,8 @@ In the example, I use a timeout policy to cancel a long running call. You can fi
 
 According to the Microsoft description, seems easy, but there are numerous of things, which you should handle.
 
+Steve Gorgon has [some blog posts about HttpClientFactory](https://www.stevejgordon.co.uk/tag/httpclientfactory "some blog posts about HttpClientFactory") topic.
+
 In the example, I did not use the [Flurl](https://flurl.io "Flurl") as fluent URL builder and HTTP client library. Worth to check the following article: [Consuming GitHub API (REST) With Flurl.](https://code-maze.com/consuming-github-api-rest-with-flurl "Consuming GitHub API (REST) With Flurl") 
 
 You can find some inline comments in the code, like this:
