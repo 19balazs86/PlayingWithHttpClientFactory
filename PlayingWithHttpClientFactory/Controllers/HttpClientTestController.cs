@@ -15,7 +15,7 @@ namespace PlayingWithHttpClientFactory.Controllers
 
     public HttpClientTestController(IUserClient userClient)
     {
-      // Here, you may inject your business logic and not the service/client directly.
+      // Here, you may inject your business logic and not directly the service/client.
       _userClient = userClient;
     }
 

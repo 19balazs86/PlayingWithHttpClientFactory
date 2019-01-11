@@ -43,7 +43,7 @@ namespace PlayingWithHttpClientFactory.Controllers
       {
         try
         {
-          // If your method do not accept token as an argument, you can check it beforehand.
+          // If your method do not accept token as an argument, you can check it here beforehand.
           ct.ThrowIfCancellationRequested();
 
           await Task.Delay(5000, ct);
