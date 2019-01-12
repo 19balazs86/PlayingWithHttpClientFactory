@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PlayingWithHttpClientFactory.HttpServices;
@@ -20,11 +20,13 @@ namespace PlayingWithHttpClientFactory.Controllers
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<string>>> Get()
+    public async Task<ActionResult<IEnumerable<string>>> Get(CancellationToken ct)
     {
+      Log.Debug("HttpClientTestController: Start the call.");
+
       try
       {
-        return Ok(await _userClient.GetUsersAsync());
+        return Ok(await _userClient.GetUsersAsync(ct));
       }
       catch (ServiceException ex)
       {
@@ -33,7 +35,7 @@ namespace PlayingWithHttpClientFactory.Controllers
         // Just a dummy response.
         return new ContentResult
         {
-          StatusCode = (int) HttpStatusCode.InternalServerError,
+          StatusCode = 500,
           Content    = $"Message: '{ex.Message}'"
         };
       }

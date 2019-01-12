@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Polly.Timeout;
@@ -22,14 +23,14 @@ namespace PlayingWithHttpClientFactory.HttpServices
       //_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("JWT", "token");
     }
 
-    public async Task<IEnumerable<string>> GetUsersAsync()
+    public async Task<IEnumerable<string>> GetUsersAsync(CancellationToken ct)
     {
       HttpResponseMessage response;
 
       try
       {
         // --> Get.
-        response = await _client.GetAsync("User");
+        response = await _client.GetAsync("User", ct);
 
         // Throws an exception if the IsSuccessStatusCode property for the HTTP response is false.
         //response.EnsureSuccessStatusCode();
@@ -40,7 +41,7 @@ namespace PlayingWithHttpClientFactory.HttpServices
       }
       catch (HttpRequestException ex)
       {
-        throw new ServiceException("Sorry, I could not get the values.", ex);
+        throw new ServiceException("Could not get the values.", ex);
       }
       catch (JsonReaderException ex)
       {
@@ -51,11 +52,15 @@ namespace PlayingWithHttpClientFactory.HttpServices
         // If the last try was timeout, Polly throws this own exception.
         throw new ServiceException("Timeout thrown by Polly.", ex);
       }
+      catch (OperationCanceledException ex)
+      {
+        throw new ServiceException("The operation was canceled.", ex);
+      }
 
-      // --> Something wrong.
+      // --> Something wrong: response with 4xx, 5xx status codes.
       string contentString = await response.Content.ReadAsStringAsync();
 
-      throw new ServiceException("Sorry, I could not get the values. " +
+      throw new ServiceException("No Exception, but I could not get the values. " +
         $"StatusCode: {(int)response.StatusCode}, Content: '{contentString}'.");
     }
   }
