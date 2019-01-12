@@ -15,10 +15,11 @@ namespace PlayingWithHttpClientFactory.Controllers
 
     public HttpClientTestController(IUserClient userClient)
     {
-      // Here, you may inject your business logic and not directly the service/client.
+      // You may inject your business logic here, not directly the service/client.
       _userClient = userClient;
     }
 
+    // This method initiate a call to the UserController with the IUserClient.
     [HttpGet]
     public async Task<ActionResult<IEnumerable<string>>> Get(CancellationToken ct)
     {
@@ -33,11 +34,7 @@ namespace PlayingWithHttpClientFactory.Controllers
         Log.Error(ex, "Failed to get users.");
 
         // Just a dummy response.
-        return new ContentResult
-        {
-          StatusCode = 500,
-          Content    = $"Message: '{ex.Message}'"
-        };
+        return new ContentResult { StatusCode = 500, Content = $"Message: '{ex.Message}'" };
       }
     }
   }

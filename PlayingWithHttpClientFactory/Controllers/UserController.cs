@@ -27,6 +27,7 @@ namespace PlayingWithHttpClientFactory.Controllers
       HttpStatusCode.OK, HttpStatusCode.OK, HttpStatusCode.OK,
     };
 
+    // This method is called by the HttpClientTestController.
     [HttpGet]
     public async Task<ActionResult<IEnumerable<string>>> Get(CancellationToken ct)
     {
@@ -43,7 +44,7 @@ namespace PlayingWithHttpClientFactory.Controllers
       {
         try
         {
-          // If your method do not accept token as an argument, you can check it here beforehand.
+          // If your method do not accept token in the argument, you can check it here beforehand.
           ct.ThrowIfCancellationRequested();
 
           await Task.Delay(5000, ct);
