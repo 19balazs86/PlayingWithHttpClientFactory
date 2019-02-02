@@ -9,8 +9,6 @@ using PlayingWithHttpClientFactory.HttpServices;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.Timeout;
-using Serilog;
-using Serilog.Events;
 
 namespace PlayingWithHttpClientFactory
 {
@@ -22,9 +20,6 @@ namespace PlayingWithHttpClientFactory
     {
       // --> Prepare configurations.
       configuration.GetSection("WaitAndRetry").Bind(_wrc);
-
-      // --> Init: Logger.
-      initLogger();
     }
 
     public void ConfigureServices(IServiceCollection services)
@@ -58,17 +53,6 @@ namespace PlayingWithHttpClientFactory
       app.UseDeveloperExceptionPage();
 
       app.UseMvc();
-    }
-
-    private static void initLogger()
-    {
-      Log.Logger = new LoggerConfiguration()
-        .MinimumLevel.Debug()
-        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-        .MinimumLevel.Override("System", LogEventLevel.Information) // Gives you useful information, but not necessary.
-        //.Enrich.FromLogContext()
-        .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {Message}{NewLine}{Exception}")
-        .CreateLogger();
     }
   }
 }
