@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PlayingWithHttpClientFactory.HttpServices;
 using Polly;
 using Polly.Extensions.Http;
+using Polly.Retry;
 using Polly.Timeout;
 
 namespace PlayingWithHttpClientFactory
@@ -30,12 +31,12 @@ namespace PlayingWithHttpClientFactory
       services.AddTransient<TestMessageHandler>();
 
       // Create: Polly policy
-      Policy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
+      AsyncRetryPolicy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
         .HandleTransientHttpError()
         .Or<TimeoutRejectedException>() // Thrown by Polly's TimeoutPolicy if the inner call gets timeout.
         .WaitAndRetryAsync(_wrc.Retry, _ => TimeSpan.FromMilliseconds(_wrc.Wait));
 
-      Policy<HttpResponseMessage> timeoutPolicy = Policy
+      AsyncTimeoutPolicy<HttpResponseMessage> timeoutPolicy = Policy
         .TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(_wrc.Timeout));
 
       // Add your service/clients with an interface, helps you to make your business logic testable.
