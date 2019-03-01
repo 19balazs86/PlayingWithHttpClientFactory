@@ -1,45 +1,42 @@
 # Playing with HttpClientFactory
 
 This small application is an example to use the built-in [HttpClientFactory](https://docs.microsoft.com/en-ie/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.2 "HttpClientFactory") in ASP.NET Core.
-HttpClientFactory provides a central location to configure and create HttpClient instances.
 
-You can find a similar example in this repository: [Playing with Refit](https://github.com/19balazs86/PlayingWithRefit "Playing with Refit"). Automatic type-safe REST library to initiate http calls.
+#### What is HttpClientFactory?
 
-This concept can be useful to initiate 3rd party services call or even your microservices can call each other (be careful with the dependency).
+- HttpClientFactory provides a central location to configure and create HttpClient instances.
+- This concept can be useful to initiate 3rd party services call or even your microservices can call each other.
+- Steve Gorgon has [some blog posts about HttpClientFactory](https://www.stevejgordon.co.uk/tag/httpclientfactory "some blog posts about HttpClientFactory") topic.
 
-Use [Polly](https://github.com/App-vNext/Polly "Polly") as a resilience and transient-fault-handling library, which can helps you to easily write [retry logic](https://docs.microsoft.com/en-ie/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.2#use-polly-based-handlers "retry logic").
-Other useful information: [Polly and HttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory "Polly and HttpClientFactory").
+#### Polly
+- I use [Polly](https://github.com/App-vNext/Polly "Polly") as a resilience and transient-fault-handling library, which can helps you to easily write [retry logic](https://docs.microsoft.com/en-ie/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.2#use-polly-based-handlers "retry logic"). Other useful information: [Polly and HttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory "Polly and HttpClientFactory").
+- In the example, I use a timeout policy to cancel a long running call. You can find a solution to use CancellationToken in case, if the client side application cancel the request.
 
-In the example, I use a timeout policy to cancel a long running call. You can find a solution to use CancellationToken in case, if the client side application cancel the request.
+> In the example, I did not use the [Flurl](https://flurl.io "Flurl") as fluent URL builder and HTTP client library. Worth to check the following article: [Consuming GitHub API (REST) With Flurl](https://code-maze.com/consuming-github-api-rest-with-flurl "Consuming GitHub API (REST) With Flurl").
 
-According to the Microsoft description, seems easy, but there are numerous of things, which you should handle.
-
-Steve Gorgon has [some blog posts about HttpClientFactory](https://www.stevejgordon.co.uk/tag/httpclientfactory "some blog posts about HttpClientFactory") topic.
-
-In the example, I did not use the [Flurl](https://flurl.io "Flurl") as fluent URL builder and HTTP client library. Worth to check the following article: [Consuming GitHub API (REST) With Flurl](https://code-maze.com/consuming-github-api-rest-with-flurl "Consuming GitHub API (REST) With Flurl") .
-
-*ConfigureServices in action:*
+#### ConfigureServices in action
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    // Add: MessageHandler(s) to the DI container.
-    services.AddTransient<TestMessageHandler>();
+  // Add: MessageHandler(s) to the DI container.
+  services.AddTransient<TestMessageHandler>();
 
-    // Create: Polly policy
-    Policy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
-        .HandleTransientHttpError()
-        .Or<TimeoutRejectedException>() // Thrown by Polly's TimeoutPolicy if the inner call gets timeout.
-        .WaitAndRetryAsync(_wrc.Retry, _ => TimeSpan.FromMilliseconds(_wrc.Wait));
+  // Create: Polly policy
+  AsyncRetryPolicy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
+    .HandleTransientHttpError()
+    .Or<TimeoutRejectedException>() // Thrown by Polly's TimeoutPolicy if the inner call gets timeout.
+    .WaitAndRetryAsync(_wrc.Retry, _ => TimeSpan.FromMilliseconds(_wrc.Wait));
 
-    Policy<HttpResponseMessage> timeoutPolicy = Policy
-        .TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(_wrc.Timeout));
+  AsyncTimeoutPolicy<HttpResponseMessage> timeoutPolicy = Policy
+    .TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(_wrc.Timeout));
 
-    // Add your service/clients with an interface, helps you to make your business logic testable.
-    // --> Add: HttpClient + Polly WaitAndRetry for HTTP 5xx and 408 responses.
-    services.AddHttpClient<IUserClient, UserHttpClient>()
-        .AddPolicyHandler(retryPolicy)
-        .AddPolicyHandler(timeoutPolicy) // The order of adding is imporant!
-        .AddHttpMessageHandler<TestMessageHandler>();
+  // Add your service/clients with an interface, helps you to make your business logic testable.
+  // --> Add: HttpClient + Polly WaitAndRetry for HTTP 5xx and 408 responses.
+  services.AddHttpClient<IUserClient, UserHttpClient>()
+    .AddPolicyHandler(retryPolicy)
+    .AddPolicyHandler(timeoutPolicy) // The order of adding is imporant!
+    // Add: MessageHandler(s).
+    .AddHttpMessageHandler<TestMessageHandler>();
 }
 ```
