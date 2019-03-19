@@ -7,6 +7,7 @@ This small application is an example to use the built-in [HttpClientFactory](htt
 - HttpClientFactory provides a central location to configure and create HttpClient instances.
 - This concept can be useful to initiate 3rd party services call or even your microservices can call each other.
 - Steve Gorgon has [some blog posts about HttpClientFactory](https://www.stevejgordon.co.uk/tag/httpclientfactory "some blog posts about HttpClientFactory") topic.
+- Steve Gorgon NDC presentation 08/03/19: [Talk about HTTP in .NET Core](https://www.youtube.com/watch?v=ojDxK_-I-To "Talk about HTTP in .NET Core").
 
 #### Polly
 - I use [Polly](https://github.com/App-vNext/Polly "Polly") as a resilience and transient-fault-handling library, which can helps you to easily write [retry logic](https://docs.microsoft.com/en-ie/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.2#use-polly-based-handlers "retry logic"). Other useful information: [Polly and HttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory "Polly and HttpClientFactory").
