@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,8 +12,9 @@ namespace PlayingWithHttpClientFactory.HttpServices
   public class UserHttpClient : IUserClient
   {
     private readonly HttpClient _client;
+    private readonly JsonSerializer _jsonSerializer;
 
-    public UserHttpClient(HttpClient client)
+    public UserHttpClient(HttpClient client, JsonSerializer jsonSerializer)
     {
       _client = client;
 
@@ -21,6 +23,8 @@ namespace PlayingWithHttpClientFactory.HttpServices
 
       // You can set also some default settings, like authorization.
       //_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("JWT", "token");
+
+      _jsonSerializer = jsonSerializer;
     }
 
     public async Task<IEnumerable<string>> GetUsersAsync(CancellationToken ct)
@@ -29,15 +33,21 @@ namespace PlayingWithHttpClientFactory.HttpServices
 
       try
       {
-        // --> Get.
-        response = await _client.GetAsync("User", ct);
+        // ResponseContentRead waits until both the headers AND content is read.
+        // ResponseHeadersRead just reads the headers and then returns.
+        response = await _client.GetAsync("User", HttpCompletionOption.ResponseHeadersRead, ct);
 
         // Throws an exception if the IsSuccessStatusCode property for the HTTP response is false.
         //response.EnsureSuccessStatusCode();
 
-        // --> Check and return if so.
         if (response.IsSuccessStatusCode)
-          return await response.Content.ReadAsAsync<IEnumerable<string>>();
+        {
+          // If you have a large object in the response. It is better than ReadAsAsync.
+          using (Stream responseStream = await response.Content.ReadAsStreamAsync())
+          using (var streamReader      = new StreamReader(responseStream))
+          using (var jsonTextReader    = new JsonTextReader(streamReader))
+            return _jsonSerializer.Deserialize<IEnumerable<string>>(jsonTextReader);
+        }
       }
       catch (HttpRequestException ex)
       {
