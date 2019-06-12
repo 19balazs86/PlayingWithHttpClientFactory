@@ -27,7 +27,7 @@ namespace PlayingWithHttpClientFactory.HttpServices
       _jsonSerializer = jsonSerializer;
     }
 
-    public async Task<IEnumerable<string>> GetUsersAsync(CancellationToken ct)
+    public async Task<IEnumerable<string>> GetUsersAsync(CancellationToken ct = default)
     {
       HttpResponseMessage response;
 

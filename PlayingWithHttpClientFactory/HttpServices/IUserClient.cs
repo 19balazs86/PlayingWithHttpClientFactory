@@ -11,6 +11,6 @@ namespace PlayingWithHttpClientFactory.HttpServices
     /// </summary>
     /// <exception cref="ServiceException">Thrown when something went wrong.</exception>
     /// <returns>Some kind of users.</returns>
-    Task<IEnumerable<string>> GetUsersAsync(CancellationToken ct);
+    Task<IEnumerable<string>> GetUsersAsync(CancellationToken ct = default);
   }
 }
