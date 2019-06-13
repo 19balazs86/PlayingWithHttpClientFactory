@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -31,26 +32,23 @@ namespace UnitTest
     [Fact]
     public async Task GetUsers_Ok()
     {
-      // Arrange
-      HttpResponseMessage response = new HttpResponseMessage
-      {
-        StatusCode = HttpStatusCode.OK,
-        Content    = new StringContent("['User #1', 'User #2']")
-      };
+      IEnumerable<string> users = new [] { "User #1", "User #2" };
 
+      // Arrange
       _httpMessageHandlerMock
         .Protected()
         .Setup<Task<HttpResponseMessage>>(
           "SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-        .ReturnsAsync(response)
+        .ReturnsAsync(createResponse(content: users))
         .Verifiable();
 
       // Act
-      IEnumerable<string> users = await SUT.GetUsersAsync(CancellationToken.None);
+      IEnumerable<string> response = await SUT.GetUsersAsync(CancellationToken.None);
 
       // Assert
-      Assert.NotNull(users);
-      Assert.NotEmpty(users);
+      Assert.NotNull(response);
+      Assert.NotEmpty(response);
+      Assert.Equal(users.Count(), response.Count());
 
       _httpMessageHandlerMock
         .Protected()
@@ -61,20 +59,25 @@ namespace UnitTest
     public async Task GetUsers_BadRequest()
     {
       // Arrange
-      HttpResponseMessage response = new HttpResponseMessage
-      {
-        StatusCode = HttpStatusCode.BadRequest,
-        Content    = new StringContent("Just a bad request.")
-      };
-
       _httpMessageHandlerMock
         .Protected()
         .Setup<Task<HttpResponseMessage>>(
           "SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-        .ReturnsAsync(response);
+        .ReturnsAsync(createResponse(HttpStatusCode.BadRequest, "Just a bad request."));
 
       // Act + Assert
       await Assert.ThrowsAsync<ServiceException>(() => SUT.GetUsersAsync(CancellationToken.None));
+    }
+
+    private static HttpResponseMessage createResponse(
+      HttpStatusCode statusCode = HttpStatusCode.OK,
+      object content            = null)
+    {
+      return new HttpResponseMessage
+      {
+        StatusCode = statusCode,
+        Content    = new StringContent(JsonConvert.SerializeObject(content))
+      };
     }
 
     public void Dispose() => _httpClient.Dispose();
