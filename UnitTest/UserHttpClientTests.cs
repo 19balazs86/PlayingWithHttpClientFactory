@@ -32,7 +32,7 @@ namespace UnitTest
     [Fact]
     public async Task GetUsers_Ok()
     {
-      IEnumerable<string> users = new [] { "User #1", "User #2" };
+      string[] users = new [] { "User #1", "User #2" };
 
       // Arrange
       _httpMessageHandlerMock
@@ -48,7 +48,7 @@ namespace UnitTest
       // Assert
       Assert.NotNull(response);
       Assert.NotEmpty(response);
-      Assert.Equal(users.Count(), response.Count());
+      Assert.Equal(users.Length, response.Count());
 
       _httpMessageHandlerMock
         .Protected()
