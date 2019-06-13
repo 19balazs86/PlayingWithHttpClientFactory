@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -11,7 +12,7 @@ using Xunit;
 
 namespace UnitTest
 {
-  public class UserHttpClientTests
+  public class UserHttpClientTests : IDisposable
   {
     private readonly IUserClient SUT;
 
@@ -75,6 +76,8 @@ namespace UnitTest
       // Act + Assert
       await Assert.ThrowsAsync<ServiceException>(() => SUT.GetUsersAsync(CancellationToken.None));
     }
+
+    public void Dispose() => _httpClient.Dispose();
 
     // And so on...
   }
