@@ -53,7 +53,7 @@ namespace PlayingWithHttpClientFactory.HttpServices
       {
         throw new ServiceException("Could not get the values.", ex);
       }
-      catch (JsonReaderException ex)
+      catch (JsonException ex)
       {
         throw new ServiceException("Could not convert the response.", ex);
       }
