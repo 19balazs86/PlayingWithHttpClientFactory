@@ -43,7 +43,7 @@ namespace UnitTest
         .Verifiable();
 
       // Act
-      IEnumerable<string> response = await SUT.GetUsersAsync(CancellationToken.None);
+      IEnumerable<string> response = await SUT.GetUsersAsync();
 
       // Assert
       Assert.NotNull(response);
@@ -63,22 +63,39 @@ namespace UnitTest
         .Protected()
         .Setup<Task<HttpResponseMessage>>(
           "SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-        .ReturnsAsync(createResponse(HttpStatusCode.BadRequest, "Just a bad request."));
+        .ReturnsAsync(createResponse("Just a bad request.", HttpStatusCode.BadRequest));
 
       // Act + Assert
-      await Assert.ThrowsAsync<ServiceException>(() => SUT.GetUsersAsync(CancellationToken.None));
+      await Assert.ThrowsAsync<ServiceException>(() => SUT.GetUsersAsync());
+    }
+
+    [Fact]
+    public async Task GetUsers_BadContent()
+    {
+      // Arrange
+      _httpMessageHandlerMock
+        .Protected()
+        .Setup<Task<HttpResponseMessage>>(
+          "SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+        .ReturnsAsync(createResponse(content: "For JsonException"));
+
+      // Act + Assert
+      await Assert.ThrowsAsync<ServiceException>(() => SUT.GetUsersAsync());
     }
 
     private static HttpResponseMessage createResponse(
-      HttpStatusCode statusCode = HttpStatusCode.OK,
-      object content            = null)
+      string content = "",
+      HttpStatusCode statusCode = HttpStatusCode.OK)
     {
       return new HttpResponseMessage
       {
         StatusCode = statusCode,
-        Content    = new StringContent(JsonConvert.SerializeObject(content))
+        Content    = new StringContent(content)
       };
     }
+
+    private static HttpResponseMessage createResponse(object content, HttpStatusCode statusCode = HttpStatusCode.OK)
+      => createResponse(JsonConvert.SerializeObject(content), statusCode);
 
     public void Dispose() => _httpClient.Dispose();
 
