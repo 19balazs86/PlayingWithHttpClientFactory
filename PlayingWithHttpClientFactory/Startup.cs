@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using PlayingWithHttpClientFactory.HttpServices;
 using Polly;
 using Polly.Extensions.Http;
@@ -27,8 +26,6 @@ namespace PlayingWithHttpClientFactory
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-      services.AddSingleton<JsonSerializer>(); // For UserHttpClient.
 
       // Add: MessageHandler(s) to the DI container.
       services.AddTransient<TestMessageHandler>();

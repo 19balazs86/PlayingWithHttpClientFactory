@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,9 +11,8 @@ namespace PlayingWithHttpClientFactory.HttpServices
   public class UserHttpClient : IUserClient
   {
     private readonly HttpClient _client;
-    private readonly JsonSerializer _jsonSerializer;
 
-    public UserHttpClient(HttpClient client, JsonSerializer jsonSerializer)
+    public UserHttpClient(HttpClient client)
     {
       _client = client;
 
@@ -23,8 +21,6 @@ namespace PlayingWithHttpClientFactory.HttpServices
 
       // You can set also some default settings, like authorization.
       //_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("JWT", "token");
-
-      _jsonSerializer = jsonSerializer;
     }
 
     public async Task<IEnumerable<string>> GetUsersAsync(CancellationToken ct = default)
@@ -41,13 +37,7 @@ namespace PlayingWithHttpClientFactory.HttpServices
         //response.EnsureSuccessStatusCode();
 
         if (response.IsSuccessStatusCode)
-        {
-          // If you have a large object in the response. It is better than ReadAsAsync.
-          using (Stream responseStream = await response.Content.ReadAsStreamAsync())
-          using (var streamReader      = new StreamReader(responseStream))
-          using (var jsonTextReader    = new JsonTextReader(streamReader))
-            return _jsonSerializer.Deserialize<IEnumerable<string>>(jsonTextReader);
-        }
+          return await response.Content.ReadAsAsync<IEnumerable<string>>();
       }
       catch (HttpRequestException ex)
       {
