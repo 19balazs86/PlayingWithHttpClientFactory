@@ -25,12 +25,14 @@ namespace PlayingWithHttpClientFactory.HttpServices
 
     public async Task<IEnumerable<string>> GetUsersAsync(CancellationToken ct = default)
     {
-      HttpResponseMessage response;
+      HttpResponseMessage response = null;
+
+      string contentString;
 
       try
       {
         // ResponseContentRead waits until both the headers AND content is read.
-        // ResponseHeadersRead just reads the headers and then returns.
+        // ResponseHeadersRead just reads the headers and then returns. Important to dispose the response!
         response = await _client.GetAsync("User", HttpCompletionOption.ResponseHeadersRead, ct);
 
         // Throws an exception if the IsSuccessStatusCode property for the HTTP response is false.
@@ -38,6 +40,9 @@ namespace PlayingWithHttpClientFactory.HttpServices
 
         if (response.IsSuccessStatusCode)
           return await response.Content.ReadAsAsync<IEnumerable<string>>();
+
+        // --> Something wrong: response with 4xx, 5xx status codes.
+        contentString = await response.Content.ReadAsStringAsync();
       }
       catch (HttpRequestException ex)
       {
@@ -56,9 +61,10 @@ namespace PlayingWithHttpClientFactory.HttpServices
       {
         throw new ServiceException("The operation was canceled.", ex);
       }
-
-      // --> Something wrong: response with 4xx, 5xx status codes.
-      string contentString = await response.Content.ReadAsStringAsync();
+      finally
+      {
+        response?.Dispose();
+      }
 
       throw new ServiceException("No Exception, but I could not get the values. " +
         $"StatusCode: {(int)response.StatusCode}, Content: '{contentString}'.");
