@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Mime;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
@@ -26,7 +28,7 @@ namespace UnitTest
 
       _httpClient = new HttpClient(_httpMessageHandlerMock.Object);
 
-      SUT = new UserHttpClient(_httpClient, new JsonSerializer());
+      SUT = new UserHttpClient(_httpClient);
     }
 
     [Fact]
@@ -90,7 +92,7 @@ namespace UnitTest
       return new HttpResponseMessage
       {
         StatusCode = statusCode,
-        Content    = new StringContent(content)
+        Content    = new StringContent(content, Encoding.UTF8, MediaTypeNames.Application.Json)
       };
     }
 
