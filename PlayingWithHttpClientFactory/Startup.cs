@@ -2,7 +2,6 @@
 using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PlayingWithHttpClientFactory.HttpServices;
@@ -25,7 +24,7 @@ namespace PlayingWithHttpClientFactory
 
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+      services.AddControllers();
 
       // Add: MessageHandler(s) to the DI container.
       services.AddTransient<TestMessageHandler>();
@@ -48,12 +47,14 @@ namespace PlayingWithHttpClientFactory
         .AddHttpMessageHandler<TestMessageHandler>();
     }
 
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
       // This is ok for now, but you may create custom middleware or exception filter.
       app.UseDeveloperExceptionPage();
 
-      app.UseMvc();
+      app.UseRouting();
+
+      app.UseEndpoints(endpoints => endpoints.MapControllers());
     }
   }
 }
