@@ -33,6 +33,7 @@ namespace PlayingWithHttpClientFactory.HttpServices
       {
         // ResponseContentRead waits until both the headers AND content is read.
         // ResponseHeadersRead just reads the headers and then returns. Important to dispose the response!
+        // https://www.stevejgordon.co.uk/using-httpcompletionoption-responseheadersread-to-improve-httpclient-performance-dotnet
         response = await _client.GetAsync("User", HttpCompletionOption.ResponseHeadersRead, ct);
 
         // Throws an exception if the IsSuccessStatusCode property for the HTTP response is false.
