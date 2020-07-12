@@ -28,7 +28,8 @@ namespace PlayingWithHttpClientFactory.HttpServices
       HttpResponseMessage response = null;
 
       string contentString;
-
+      
+      // Error handling (Josef): https://josef.codes/httpclient-error-handling-a-test-driven-approach
       try
       {
         // ResponseContentRead waits until both the headers AND content is read.
