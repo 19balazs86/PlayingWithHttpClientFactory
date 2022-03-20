@@ -1,15 +1,14 @@
-﻿using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using Serilog;
-
-namespace PlayingWithHttpClientFactory.HttpServices
+﻿namespace PlayingWithHttpClientFactory.HttpServices
 {
   public class TestMessageHandler : DelegatingHandler
   {
-    public TestMessageHandler()
+    private readonly ILogger<TestMessageHandler> _logger;
+
+    public TestMessageHandler(ILogger<TestMessageHandler> logger)
     {
       // The constructor call one time.
+
+      _logger = logger;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(
@@ -22,7 +21,7 @@ namespace PlayingWithHttpClientFactory.HttpServices
 
       // Do / check something with the response.
 
-      Log.Verbose($"We had a/an {response.StatusCode} status code.");
+      _logger.LogInformation($"We had a/an {response.StatusCode} status code.");
 
       return response;
     }

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
 
 namespace PlayingWithHttpClientFactory.Controllers
 {
@@ -13,6 +8,13 @@ namespace PlayingWithHttpClientFactory.Controllers
   public class UserController : ControllerBase
   {
     private readonly Random _random = new Random();
+
+    private readonly ILogger<UserController> _logger;
+
+    public UserController(ILogger<UserController> logger)
+    {
+      _logger = logger;
+    }
 
     private readonly HttpStatusCode[] _httpStatusCodes = new HttpStatusCode[]
     {
@@ -33,7 +35,7 @@ namespace PlayingWithHttpClientFactory.Controllers
     {
       HttpStatusCode selectedStatusCode = _httpStatusCodes[_random.Next(_httpStatusCodes.Length)];
 
-      Log.Debug($"UserController: Selected status code: {selectedStatusCode}");
+      _logger.LogDebug("UserController: Selected status code: {selectedStatusCode}", selectedStatusCode);
 
       // --> Return OK.
       if (selectedStatusCode == HttpStatusCode.OK)
@@ -51,15 +53,15 @@ namespace PlayingWithHttpClientFactory.Controllers
         }
         catch (OperationCanceledException)
         {
-          Log.Debug("UserController: The operation was canceled.");
+          _logger.LogDebug("UserController: The operation was canceled.");
 
           return NoContent();
         }
 
         // The timeout policy will end this call earlier, so you won't see this line.
-        Log.Debug($"UserController: After the delay.");
+        _logger.LogDebug($"UserController: After the delay.");
       }
-      
+
       // --> Other returns.
       return new ContentResult
       {
