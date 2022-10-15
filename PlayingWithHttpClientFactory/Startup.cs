@@ -37,7 +37,9 @@ namespace PlayingWithHttpClientFactory
 
       AsyncTimeoutPolicy<HttpResponseMessage> timeoutPolicy = Policy
         .TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(_wrc.Timeout));
-
+        
+      // Circuit-breaker - Nick Chapsas video: https://youtu.be/3U_TJZU06Ag
+      
       // Add your service/clients with an interface, helps you to make your business logic testable.
       // --> Add: HttpClient + Polly WaitAndRetry for HTTP 5xx and 408 responses.
       services.AddHttpClient<IUserClient, UserHttpClient>()
