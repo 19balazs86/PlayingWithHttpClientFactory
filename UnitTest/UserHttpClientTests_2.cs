@@ -5,74 +5,76 @@ using System.Net.Http.Json;
 using System.Net.Mime;
 using Xunit;
 
-namespace UnitTest
+namespace UnitTest;
+
+public sealed class UserHttpClientTests_2 : IDisposable
 {
-    public class UserHttpClientTests_2 : IDisposable
+    private const string _userUrl = "http://localhost:5000/User"; // This is also works"*/User"
+
+    private readonly IUserClient SUT;
+
+    private readonly HttpClient _httpClient;
+
+    private readonly MockHttpMessageHandler _httpMessageHandlerMock;
+
+    public UserHttpClientTests_2()
     {
-        private const string _userUrl = "http://localhost:5000/User"; // This is also works"*/User"
+        _httpMessageHandlerMock = new MockHttpMessageHandler();
 
-        private readonly IUserClient SUT;
+        _httpClient = _httpMessageHandlerMock.ToHttpClient();
+        //_httpClient = new HttpClient(_httpMessageHandlerMock);
 
-        private readonly HttpClient _httpClient;
+        SUT = new UserHttpClient(_httpClient);
+    }
 
-        private readonly MockHttpMessageHandler _httpMessageHandlerMock;
+    [Fact]
+    public async Task GetUsers_Ok()
+    {
+        string[] users = new[] { "User #1", "User #2" };
 
-        public UserHttpClientTests_2()
-        {
-            _httpMessageHandlerMock = new MockHttpMessageHandler();
+        // Arrange
+        _httpMessageHandlerMock
+            //.Expect(_userUrl) // Difference between When and Expect: https://github.com/richardszalay/mockhttp
+            .When(_userUrl)
+            .Respond(HttpStatusCode.OK, JsonContent.Create(users));
 
-            _httpClient = _httpMessageHandlerMock.ToHttpClient();
-            //_httpClient = new HttpClient(_httpMessageHandlerMock);
+        // Act
+        IEnumerable<string> response = await SUT.GetUsersAsync();
 
-            SUT = new UserHttpClient(_httpClient);
-        }
+        // Assert
+        Assert.NotNull(response);
+        Assert.NotEmpty(response);
+        Assert.Equal(users.Length, response.Count());
 
-        [Fact]
-        public async Task GetUsers_Ok()
-        {
-            string[] users = new[] { "User #1", "User #2" };
+        _httpMessageHandlerMock.VerifyNoOutstandingExpectation();
+    }
 
-            // Arrange
-            _httpMessageHandlerMock
-                //.Expect(_userUrl) // Difference between When and Expect: https://github.com/richardszalay/mockhttp
-                .When(_userUrl)
-                .Respond(HttpStatusCode.OK, JsonContent.Create(users));
+    [Fact]
+    public async Task GetUsers_BadRequest()
+    {
+        // Arrange
+        _httpMessageHandlerMock
+            .When(_userUrl)
+            .Respond(HttpStatusCode.BadRequest, MediaTypeNames.Text.Plain, "Just a bad request.");
 
-            // Act
-            IEnumerable<string> response = await SUT.GetUsersAsync();
+        // Act + Assert
+        await Assert.ThrowsAsync<ServiceException>(() => SUT.GetUsersAsync());
+    }
 
-            // Assert
-            Assert.NotNull(response);
-            Assert.NotEmpty(response);
-            Assert.Equal(users.Length, response.Count());
+    [Fact]
+    public async Task GetUsers_BadContent()
+    {
+        // Arrange
+        _httpMessageHandlerMock
+            .When(_userUrl)
+            .Respond(HttpStatusCode.OK, JsonContent.Create("For JsonException"));
 
-            _httpMessageHandlerMock.VerifyNoOutstandingExpectation();
-        }
+        // Act + Assert
+        await Assert.ThrowsAsync<ServiceException>(() => SUT.GetUsersAsync());
+    }
 
-        [Fact]
-        public async Task GetUsers_BadRequest()
-        {
-            // Arrange
-            _httpMessageHandlerMock
-                .When(_userUrl)
-                .Respond(HttpStatusCode.BadRequest, MediaTypeNames.Text.Plain, "Just a bad request.");
-
-            // Act + Assert
-            await Assert.ThrowsAsync<ServiceException>(() => SUT.GetUsersAsync());
-        }
-
-        [Fact]
-        public async Task GetUsers_BadContent()
-        {
-            // Arrange
-            _httpMessageHandlerMock
-                .When(_userUrl)
-                .Respond(HttpStatusCode.OK, JsonContent.Create("For JsonException"));
-
-            // Act + Assert
-            await Assert.ThrowsAsync<ServiceException>(() => SUT.GetUsersAsync());
-        }
-
-        public void Dispose() => _httpClient.Dispose();
+    public void Dispose()
+    {
+        _httpClient.Dispose();
     }
 }

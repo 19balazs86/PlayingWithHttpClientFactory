@@ -5,17 +5,21 @@ This small application is an example to use the built-in [HttpClientFactory](htt
 
 #### What is HttpClientFactory?
 - `HttpClientFactory` provides a central location to configure and create `HttpClient` instances.
-- This concept can be useful to initiate 3rd party services call or even your microservices can call each other.
 
 #### Resources
-- Steve Gorgon
-  - [Some blog posts about HttpClientFactory](https://www.stevejgordon.co.uk/tag/httpclientfactory) topic.
-  - Presentation: [Let’s talk about HTTP in .NET Core](https://www.youtube.com/watch?v=Ssii6AwF7Uc).
-- Blog: [You are (probably still) using HttpClient wrong](https://josefottosson.se/you-are-probably-still-using-httpclient-wrong-and-it-is-destabilizing-your-software/).
-- Blog: [How to mock HttpClient in unit tests](https://gingter.org/2018/07/26/how-to-mock-httpclient-in-your-net-c-unit-tests/).
+- [Some blog posts about HttpClientFactory](https://www.stevejgordon.co.uk/tag/httpclientfactory) 📓*Steve Gorgon*
+- [Let’s talk about HTTP in .NET Core](https://www.youtube.com/watch?v=Ssii6AwF7Uc) 📽️*45min - Steve Gorgon*
+- [You are (probably) using HttpClient wrong](https://josefottosson.se/you-are-probably-still-using-httpclient-wrong-and-it-is-destabilizing-your-software) 📓*Josef Ottosson*
+- [How to mock HttpClient in unit tests](https://gingter.org/2018/07/26/how-to-mock-httpclient-in-your-net-c-unit-tests) 📓*Gingter Ale*
+
+#### Unit Test for mocking HttpClient
+
+1) Using Moq and Moq.Protected
+1) Using the [RichardSzalay.MockHttp](https://github.com/richardszalay/mockhttp) 👤*package*
+1) Using [WireMock.Net](https://github.com/WireMock-Net/WireMock.Net) 👤*package* | [WireMock.NET - Introduction](https://cezarypiatek.github.io/post/mocking-outgoing-http-requests-p1) 📓*Cezary Piątek*
 
 #### Polly
-- Using [Polly](https://github.com/App-vNext/Polly) as a resilience and transient-fault-handling library, which can helps you to easily write [retry logic](https://docs.microsoft.com/en-ie/aspnet/core/fundamentals/http-requests?view=aspnetcore-3.0#use-polly-based-handlers). Other useful information: [Polly and HttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory).
+- Using [Polly](https://github.com/App-vNext/Polly) as a resilience and transient-fault-handling library, which can helps you to easily write [retry logic](https://learn.microsoft.com/en-ie/aspnet/core/fundamentals/http-requests?view=aspnetcore-7.0#use-polly-based-handlers). Other useful information: [Polly and HttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory).
 - In the example, I use a timeout policy to cancel a long running call. You can find a solution to use `CancellationToken` in case, if the client side application cancel the request.
 
 > You can find a similar example in this repository: [Playing with Refit](https://github.com/19balazs86/PlayingWithRefit). Automatic type-safe REST library to initiate http calls.
