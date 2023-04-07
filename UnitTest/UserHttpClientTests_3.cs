@@ -49,6 +49,10 @@ public sealed class UserHttpClientTests_3 : IDisposable
         Assert.NotNull(response);
         Assert.NotEmpty(response);
         Assert.Equal(users.Length, response.Count());
+
+        // https://github.com/WireMock-Net/WireMock.Net/wiki/FluentAssertions
+        // WireMock.Net.FluentAssertions
+        //_wireMockServer.Should().HaveReceivedACall().AtUrl($"{_wireMockServer.Url}/User");
     }
 
     [Fact]
