@@ -14,12 +14,16 @@ This small application is an example to use the built-in [HttpClientFactory](htt
 
 #### Unit Test for mocking HttpClient
 
-1) Using Moq and Moq.Protected
-1) Using the [RichardSzalay.MockHttp](https://github.com/richardszalay/mockhttp) 👤*package*
-1) Using [WireMock.Net](https://github.com/WireMock-Net/WireMock.Net) 👤*package* | [WireMock.NET - Introduction](https://cezarypiatek.github.io/post/mocking-outgoing-http-requests-p1) 📓*Cezary Piątek*
+- Using Moq and Moq.Protected
+- Using the [RichardSzalay.MockHttp](https://github.com/richardszalay/mockhttp) 👤*package*
+- Using [WireMock.Net](https://github.com/WireMock-Net/WireMock.Net) 👤*package*
+  - [WireMock.NET - Introduction](https://cezarypiatek.github.io/post/mocking-outgoing-http-requests-p1) 📓*Cezary Piątek*
+  - [Why my WireMock mocks aren't working?](https://blog.genezini.com/p/why-my-wiremock-mocks-arent-working) 📓*Daniel Genezini*
+
 
 #### Polly
 - Using [Polly](https://github.com/App-vNext/Polly) as a resilience and transient-fault-handling library, which can helps you to easily write [retry logic](https://learn.microsoft.com/en-ie/aspnet/core/fundamentals/http-requests?view=aspnetcore-7.0#use-polly-based-handlers). Other useful information: [Polly and HttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory).
+
 - In the example, I use a timeout policy to cancel a long running call. You can find a solution to use `CancellationToken` in case, if the client side application cancel the request.
 
 > You can find a similar example in this repository: [Playing with Refit](https://github.com/19balazs86/PlayingWithRefit). Automatic type-safe REST library to initiate http calls.
