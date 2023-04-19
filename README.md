@@ -17,7 +17,8 @@ This small application is an example to use the built-in [HttpClientFactory](htt
 - Using Moq and Moq.Protected
 - Using the [RichardSzalay.MockHttp](https://github.com/richardszalay/mockhttp) 👤*package*
 - Using [WireMock.Net](https://github.com/WireMock-Net/WireMock.Net) 👤*package*
-  - [WireMock.NET - Introduction](https://cezarypiatek.github.io/post/mocking-outgoing-http-requests-p1) 📓*Cezary Piątek*
+  - [Introduction](https://cezarypiatek.github.io/post/mocking-outgoing-http-requests-p1) 📓*Cezary Piątek*
+  - [Troubleshooting](https://cezarypiatek.github.io/post/mocking-outgoing-http-requests-p2) 📓*Cezary Piątek*
   - [Why my WireMock mocks aren't working?](https://blog.genezini.com/p/why-my-wiremock-mocks-arent-working) 📓*Daniel Genezini*
 
 
