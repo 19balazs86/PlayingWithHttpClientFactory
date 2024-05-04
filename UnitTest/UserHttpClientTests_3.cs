@@ -19,7 +19,7 @@ public sealed class UserHttpClientTests_3 : IDisposable
 
     public UserHttpClientTests_3()
     {
-        _wireMockServer = WireMockServer.StartWithAdminInterface(port: 5000, ssl: false);
+        _wireMockServer = WireMockServer.StartWithAdminInterface(port: 5000, useSSL: false);
 
         _httpClient = _wireMockServer.CreateClient();
 
