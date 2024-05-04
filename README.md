@@ -10,6 +10,7 @@ This small application is an example to use the built-in [HttpClientFactory](htt
 - [Some blog posts about HttpClientFactory](https://www.stevejgordon.co.uk/tag/httpclientfactory) 📓*Steve Gorgon*
 - [Let’s talk about HTTP in .NET Core](https://www.youtube.com/watch?v=Ssii6AwF7Uc) 📽️*45min - Steve Gorgon*
 - [You are (probably) using HttpClient wrong](https://josefottosson.se/you-are-probably-still-using-httpclient-wrong-and-it-is-destabilizing-your-software) 📓*Josef Ottosson*
+- [Customize the HttpClient logging](https://josef.codes/customize-the-httpclient-logging-dotnet-core) 📓*Josef Ottosson*
 - [The right way to use HttpClient](https://www.milanjovanovic.tech/blog/the-right-way-to-use-httpclient-in-dotnet) 📓*Milan's newsletter*
 - [How to mock HttpClient in unit tests](https://gingter.org/2018/07/26/how-to-mock-httpclient-in-your-net-c-unit-tests) 📓*Gingter Ale*
 
