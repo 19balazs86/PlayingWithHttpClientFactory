@@ -13,6 +13,7 @@ This small application is an example to use the built-in [HttpClientFactory](htt
 - [Customize the HttpClient logging](https://josef.codes/customize-the-httpclient-logging-dotnet-core) 📓*Josef Ottosson*
 - [The right way to use HttpClient](https://www.milanjovanovic.tech/blog/the-right-way-to-use-httpclient-in-dotnet) 📓*Milan's newsletter*
 - [How to mock HttpClient in unit tests](https://gingter.org/2018/07/26/how-to-mock-httpclient-in-your-net-c-unit-tests) 📓*Gingter Ale*
+- [Delegating handlers to extend HttpClient](https://code-maze.com/aspnetcore-using-delegating-handlers-to-extend-httpclient) 📓*Code-Maze*
 
 #### Unit Test for mocking HttpClient
 
