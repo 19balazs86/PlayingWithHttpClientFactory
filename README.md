@@ -18,7 +18,8 @@ This small application is an example to use the built-in [HttpClientFactory](htt
 #### Unit Test for mocking HttpClient
 
 - Using Moq and Moq.Protected
-- Using the [RichardSzalay.MockHttp](https://github.com/richardszalay/mockhttp) 👤*package*
+- Using the [MockHttp](https://github.com/richardszalay/mockhttp) package 👤*Richard Szalay*
+- Using the [Pact. NET](https://github.com/pact-foundation/pact-net) package 👤*Pact Foundation*
 - Using [WireMock.Net](https://github.com/WireMock-Net/WireMock.Net) 👤*package*
   - [Seamless Integration Testing with WireMock.NET](https://code-maze.com/integration-testing-wiremock-dotnet) 📓*Code-Maze*
   - [Introduction](https://cezarypiatek.github.io/post/mocking-outgoing-http-requests-p1) 📓*Cezary Piątek*
