@@ -30,7 +30,7 @@ public sealed class UserHttpClientTests_2 : IDisposable
     [Fact]
     public async Task GetUsers_Ok()
     {
-        string[] users = new[] { "User #1", "User #2" };
+        string[] users = ["User #1", "User #2"];
 
         // Arrange
         _httpMessageHandlerMock

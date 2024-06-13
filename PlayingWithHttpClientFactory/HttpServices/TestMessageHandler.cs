@@ -1,29 +1,28 @@
-﻿namespace PlayingWithHttpClientFactory.HttpServices
+﻿namespace PlayingWithHttpClientFactory.HttpServices;
+
+public class TestMessageHandler : DelegatingHandler
 {
-  public class TestMessageHandler : DelegatingHandler
-  {
     private readonly ILogger<TestMessageHandler> _logger;
 
     public TestMessageHandler(ILogger<TestMessageHandler> logger)
     {
-      // The constructor call one time.
+        // The constructor call one time.
 
-      _logger = logger;
+        _logger = logger;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-      // Check request
+        // Check request
 
-      HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+        HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
 
-      // Do / check something with the response.
+        // Do / check something with the response.
 
-      _logger.LogInformation($"We had a/an {response.StatusCode} status code.");
+        _logger.LogInformation("We had a/an {StatusCode}.", response.StatusCode);
 
-      return response;
+        return response;
     }
-  }
 }

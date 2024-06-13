@@ -32,7 +32,7 @@ public sealed class UserHttpClientTests_3 : IDisposable
     public async Task GetUsers_Ok()
     {
         // Arrange
-        string[] users = new[] { "User #1", "User #2" };
+        string[] users = ["User #1", "User #2"];
 
         _wireMockServer
             //.Given(Request.Create().WithPath("/User").UsingGet())

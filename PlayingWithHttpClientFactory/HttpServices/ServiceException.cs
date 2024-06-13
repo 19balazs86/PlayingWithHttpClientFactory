@@ -1,9 +1,7 @@
-﻿using System;
+﻿namespace PlayingWithHttpClientFactory.HttpServices;
 
-namespace PlayingWithHttpClientFactory.HttpServices
+public class ServiceException : Exception
 {
-  public class ServiceException : Exception
-  {
     public ServiceException()
     {
     }
@@ -15,5 +13,4 @@ namespace PlayingWithHttpClientFactory.HttpServices
     public ServiceException(string message, Exception innerException) : base(message, innerException)
     {
     }
-  }
 }
