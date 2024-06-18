@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using Polly.Timeout;
+﻿using Polly.Timeout;
+using System.Text.Json;
 
 namespace PlayingWithHttpClientFactory.HttpServices;
 
-public class UserHttpClient : IUserClient
+public sealed class UserHttpClient : IUserClient
 {
     private readonly HttpClient _client;
 
@@ -36,10 +36,10 @@ public class UserHttpClient : IUserClient
             //response.EnsureSuccessStatusCode();
 
             if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsAsync<IEnumerable<string>>();
+                return await response.Content.ReadFromJsonAsync<IEnumerable<string>>(ct);
 
             // --> Something wrong: response with 4xx, 5xx status codes.
-            contentString = await response.Content.ReadAsStringAsync();
+            contentString = await response.Content.ReadAsStringAsync(ct);
         }
         catch (HttpRequestException ex)
         {
@@ -47,7 +47,7 @@ public class UserHttpClient : IUserClient
         }
         catch (JsonException ex)
         {
-            throw new ServiceException("Could not convert the response.", ex);
+            throw new ServiceException("The JSON is invalid.", ex);
         }
         catch (TimeoutRejectedException ex)
         {
