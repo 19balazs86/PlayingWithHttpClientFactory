@@ -49,7 +49,7 @@ public sealed class UserHttpClient : IUserClient
         {
             throw new ServiceException("The JSON is invalid.", ex);
         }
-        catch (TimeoutRejectedException ex)
+        catch (TimeoutRejectedException ex) // ExecutionRejectedException can be use to catch Polly's exceptions: https://www.pollydocs.org/api/Polly.ExecutionRejectedException.html
         {
             // If the last try was timeout, Polly throws this own exception.
             throw new ServiceException("Timeout thrown by Polly.", ex);
