@@ -30,8 +30,10 @@ This small application is an example to use the built-in [HttpClientFactory](htt
 
 #### Polly
 - [Polly docs](https://www.pollydocs.org/) 📓*Official*
-- [Build resilient HTTP applications](https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience) | [Introduction to resilient app development](https://learn.microsoft.com/en-us/dotnet/core/resilience) 📚*Microsoft-learn*
-- [Resilience for a single HttpClient](https://learn.microsoft.com/en-us/dotnet/fundamentals/networking/http/httpclient-guidelines#resilience-with-static-clients) 📚*Microsoft-learn*
+- 📚Microsoft-learn
+  - [Build resilient HTTP applications](https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience)
+  - [Introduction to resilient app development](https://learn.microsoft.com/en-us/dotnet/core/resilience)
+  - [Resilience for a single HttpClient](https://learn.microsoft.com/en-us/dotnet/fundamentals/networking/http/httpclient-guidelines#resilience-with-static-clients) *- experimental*
 - [Building resilient cloud services](https://devblogs.microsoft.com/dotnet/building-resilient-cloud-services-with-dotnet-8) 📓*MS-DevBlog*
 - [Apply resilience pipelines when AddHttpClient](https://youtu.be/pgeHRp2Otlc) 📽*32 min - Julio Casal*
 - [Resilience Pipelines in .NET 8 with Polly](https://www.milanjovanovic.tech/blog/building-resilient-cloud-applications-with-dotnet) 📓*Milan's newsletter*

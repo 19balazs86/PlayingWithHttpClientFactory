@@ -19,6 +19,7 @@ public sealed class UserController : ControllerBase
         HttpStatusCode.BadRequest,           // Polly won't retry for this
         HttpStatusCode.NotFound,             // Polly won't retry for this
         HttpStatusCode.UnprocessableContent, // Polly won't retry for this
+        HttpStatusCode.NotImplemented,       // I use it for 200 OK with bad JSON response
         HttpStatusCode.RequestTimeout,
         HttpStatusCode.RequestTimeout,
         HttpStatusCode.InternalServerError,
@@ -39,6 +40,10 @@ public sealed class UserController : ControllerBase
         // --> Return OK
         if (selectedStatusCode == HttpStatusCode.OK)
             return new string[] { "user 1", "user 2" };
+
+        // --> Return OK with bad JSON and JsonException will be thrown in UserHttpClient
+        if (selectedStatusCode == HttpStatusCode.NotImplemented)
+            return new ContentResult { StatusCode = 200, Content = "{Bad JSON}" };
 
         // --> Delay
         if (selectedStatusCode == HttpStatusCode.RequestTimeout)

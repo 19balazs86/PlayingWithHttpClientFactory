@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using PlayingWithHttpClientFactory.HttpServices;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text;
 using Xunit;
@@ -87,10 +88,18 @@ public sealed class UserHttpClientTests : IDisposable
     #region Helper methods
 
     private static HttpResponseMessage createResponse(string content, HttpStatusCode statusCode = HttpStatusCode.OK)
-        => createResponse(new StringContent(content, Encoding.UTF8, MediaTypeNames.Application.Json), statusCode);
+    {
+        return createResponse(new StringContent(content, Encoding.UTF8, MediaTypeNames.Application.Json), statusCode);
+    }
 
     private static HttpResponseMessage createResponse(object content, HttpStatusCode statusCode = HttpStatusCode.OK)
-        => createResponse(createHttpStreamContent(content), statusCode);
+    {
+        // This is much simpler than the 'old' way
+        return createResponse(JsonContent.Create(content), statusCode);
+
+        // 'Old' way
+        // return createResponse(createHttpStreamContent(content), statusCode);
+    }
 
     private static HttpResponseMessage createResponse(
         HttpContent content,
@@ -119,7 +128,7 @@ public sealed class UserHttpClientTests : IDisposable
 
     private static void serializeJsonIntoStream(object value, Stream stream)
     {
-        using var streamWriter = new StreamWriter(stream, Encoding.UTF8, 1024, true);
+        using var streamWriter   = new StreamWriter(stream, Encoding.UTF8, 1024, true);
         using var jsonTextWriter = new JsonTextWriter(streamWriter);
 
         new JsonSerializer().Serialize(jsonTextWriter, value);
