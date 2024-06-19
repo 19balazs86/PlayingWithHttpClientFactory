@@ -16,8 +16,9 @@ public sealed class UserController : ControllerBase
 
     private readonly HttpStatusCode[] _httpStatusCodes =
     [
-        HttpStatusCode.BadRequest,  // Polly won't retry for this.
-        HttpStatusCode.NotFound,    // Polly won't retry for this.
+        HttpStatusCode.BadRequest,           // Polly won't retry for this
+        HttpStatusCode.NotFound,             // Polly won't retry for this
+        HttpStatusCode.UnprocessableContent, // Polly won't retry for this
         HttpStatusCode.RequestTimeout,
         HttpStatusCode.RequestTimeout,
         HttpStatusCode.InternalServerError,

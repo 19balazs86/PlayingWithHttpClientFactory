@@ -29,36 +29,31 @@ This small application is an example to use the built-in [HttpClientFactory](htt
 
 
 #### Polly
-- Using [Polly](https://github.com/App-vNext/Polly) as a resilience and transient-fault-handling library, which can helps you to easily write [retry logic](https://learn.microsoft.com/en-ie/aspnet/core/fundamentals/http-requests?view=aspnetcore-7.0#use-polly-based-handlers). Other useful information: [Polly and HttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory).
-
-- In the example, I use a timeout policy to cancel a long running call. You can find a solution to use `CancellationToken` in case, if the client side application cancel the request.
+- [Polly docs](https://www.pollydocs.org/) 📓*Official*
+- [Build resilient HTTP applications](https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience) | [Introduction to resilient app development](https://learn.microsoft.com/en-us/dotnet/core/resilience) 📚*Microsoft-learn*
+- [Resilience for a single HttpClient](https://learn.microsoft.com/en-us/dotnet/fundamentals/networking/http/httpclient-guidelines#resilience-with-static-clients) 📚*Microsoft-learn*
+- [Building resilient cloud services](https://devblogs.microsoft.com/dotnet/building-resilient-cloud-services-with-dotnet-8) 📓*MS-DevBlog*
+- [Apply resilience pipelines when AddHttpClient](https://youtu.be/pgeHRp2Otlc) 📽*32 min - Julio Casal*
+- [Resilience Pipelines in .NET 8 with Polly](https://www.milanjovanovic.tech/blog/building-resilient-cloud-applications-with-dotnet) 📓*Milan's newsletter*
 
 > You can find a similar example in this repository: [Playing with Refit](https://github.com/19balazs86/PlayingWithRefit). Automatic type-safe REST library to initiate http calls.
 
 > In the example, I did not use the [Flurl](https://flurl.io) as fluent URL builder and HTTP client library. Worth to check the following article: [Consuming GitHub API (REST) With Flurl](https://code-maze.com/consuming-github-api-rest-with-flurl).
 
-#### ConfigureServices in action
+#### Configuration
 ```csharp
-public void ConfigureServices(IServiceCollection services)
+private static void configureResilienceHandler(ResiliencePipelineBuilder<HttpResponseMessage> pipelineBuilder)
 {
-  // Add: MessageHandler(s) to the DI container.
-  services.AddTransient<TestMessageHandler>();
-
-  // Create: Polly policy
-  AsyncRetryPolicy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
-    .HandleTransientHttpError()
-    .Or<TimeoutRejectedException>() // Thrown by Polly's TimeoutPolicy if the inner call gets timeout.
-    .WaitAndRetryAsync(_wrc.Retry, _ => TimeSpan.FromMilliseconds(_wrc.Wait));
-
-  AsyncTimeoutPolicy<HttpResponseMessage> timeoutPolicy = Policy
-    .TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(_wrc.Timeout));
-
-  // Add your service/clients with an interface, helps you to make your business logic testable.
-  // --> Add: HttpClient + Polly WaitAndRetry for HTTP 5xx and 408 responses.
-  services.AddHttpClient<IUserClient, UserHttpClient>()
-    .AddPolicyHandler(retryPolicy)
-    .AddPolicyHandler(timeoutPolicy) // The order of adding is imporant!
-    // Add: MessageHandler(s).
-    .AddHttpMessageHandler<TestMessageHandler>();
+  var retryOptions = new HttpRetryStrategyOptions
+  {
+    MaxRetryAttempts = 2,
+    Delay            = TimeSpan.FromMilliseconds(500),
+    BackoffType      = DelayBackoffType.Constant
+  };
+  
+  pipelineBuilder
+    .AddTimeout(TimeSpan.FromSeconds(5)) // Total timeout for the request execution
+    .AddRetry(retryOptions)
+    .AddTimeout(TimeSpan.FromMilliseconds(500)); // Timeout per each request attempt
 }
 ```

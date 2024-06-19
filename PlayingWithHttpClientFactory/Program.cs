@@ -1,8 +1,6 @@
-﻿using PlayingWithHttpClientFactory.HttpServices;
+﻿using Microsoft.Extensions.Http.Resilience;
+using PlayingWithHttpClientFactory.HttpServices;
 using Polly;
-using Polly.Extensions.Http;
-using Polly.Retry;
-using Polly.Timeout;
 
 namespace PlayingWithHttpClientFactory;
 
@@ -18,27 +16,14 @@ public static class Program
         {
             services.AddControllers();
 
-            // Add: MessageHandler(s) to the DI container.
             services.AddTransient<TestMessageHandler>();
 
-            // Create: Polly policy
-            AsyncRetryPolicy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .Or<TimeoutRejectedException>() // Thrown by Polly's TimeoutPolicy if the inner call gets timeout.
-                .WaitAndRetryAsync(2, _ => TimeSpan.FromMilliseconds(500));
-
-            AsyncTimeoutPolicy<HttpResponseMessage> timeoutPolicy = Policy
-                .TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(500));
-
-            // Circuit-breaker - Nick Chapsas video: https://youtu.be/3U_TJZU06Ag
-
-            // Add your service/clients with an interface, helps you to make your business logic testable.
-            // --> Add: HttpClient + Polly WaitAndRetry for HTTP 5xx and 408 responses.
+            // --> Add: HttpClient with resilience
             services.AddHttpClient<IUserClient, UserHttpClient>()
-                .AddPolicyHandler(retryPolicy)
-                .AddPolicyHandler(timeoutPolicy) // The order of adding is imporant!
                 .AddHttpMessageHandler<TestMessageHandler>()
-                .ConfigureCustomLogging();
+                .ConfigureCustomLogging()
+                //.AddStandardResilienceHandler()
+                .AddResilienceHandler("user-pipeline", configureResilienceHandler);
 
             // Configure: Default values for HttpClient
             services.ConfigureHttpClientDefaults(httpClientBuilder => { /* ... */ });
@@ -48,11 +33,37 @@ public static class Program
 
         // Configure the request pipeline
         {
-            app.UseHttpsRedirection();
-
             app.MapControllers();
         }
 
         app.Run();
+    }
+
+    private static void configureResilienceHandler(ResiliencePipelineBuilder<HttpResponseMessage> pipelineBuilder)
+    {
+        // Circuit-breaker - Nick Chapsas video for older version of Polly: https://youtu.be/3U_TJZU06Ag
+
+        // --> Define option: Retry
+        var retryOptions = new HttpRetryStrategyOptions
+        {
+            // ShouldHandle = ... this is set by default in HttpRetryStrategyOptions
+            MaxRetryAttempts = 2,
+            Delay            = TimeSpan.FromMilliseconds(500),
+            MaxDelay         = TimeSpan.FromMilliseconds(500),
+            BackoffType      = DelayBackoffType.Constant,
+            OnRetry = arg =>
+            {
+                // This is not necessary because Polly does logging by default, which you can manage in appsettings.json
+                //Console.WriteLine("AttemptNumber: {0}, Duration: {1}, Result.StatusCode: {2}, Exception: '{3}'", arg.AttemptNumber, arg.Duration, arg.Outcome.Result?.StatusCode, arg.Outcome.Exception?.Message);
+
+                return ValueTask.CompletedTask;
+            }
+        };
+
+        // --> Configure: Pipeline
+        pipelineBuilder
+            .AddTimeout(TimeSpan.FromSeconds(5)) // Total timeout for the request execution
+            .AddRetry(retryOptions)
+            .AddTimeout(TimeSpan.FromMilliseconds(500)); // Timeout per each request attempt
     }
 }
