@@ -18,7 +18,7 @@ public static class HttpClientBuilderExtensions
 }
 
 // Customize the HttpClient logging: https://josef.codes/customize-the-httpclient-logging-dotnet-core
-public sealed class HttpClientLogging : IHttpClientLogger
+public sealed class HttpClientLogging : IHttpClientLogger // IHttpClientAsyncLogger
 {
     private readonly ILogger<HttpClientLogging> _logger;
 
