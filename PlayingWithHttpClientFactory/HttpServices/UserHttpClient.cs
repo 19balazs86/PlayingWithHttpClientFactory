@@ -29,7 +29,8 @@ public sealed class UserHttpClient : IUserClient
         {
             // ResponseContentRead waits until both the headers AND content is read.
             // ResponseHeadersRead just reads the headers and then returns. Important to dispose the response!
-            // https://www.stevejgordon.co.uk/using-httpcompletionoption-responseheadersread-to-improve-httpclient-performance-dotnet
+            // Link #1: https://www.stevejgordon.co.uk/using-httpcompletionoption-responseheadersread-to-improve-httpclient-performance-dotnet
+            // Link #2: https://steven-giesel.com/blogPost/e2c3bcba-4f81-42b0-9b25-060da5e819fa
             response = await _client.GetAsync("User", HttpCompletionOption.ResponseHeadersRead, ct);
 
             // Throws an exception if the IsSuccessStatusCode property for the HTTP response is false.
