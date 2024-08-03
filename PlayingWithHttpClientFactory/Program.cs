@@ -18,6 +18,9 @@ public static class Program
 
             services.AddTransient<TestMessageHandler>();
 
+            // You can use this predefined pipeline via DI. Example: Milan's newsletter in the README
+            // services.AddResiliencePipeline<string, GitHubUser?>("gh-fallback", builder => { });
+
             // --> Add: HttpClient with resilience
             services.AddHttpClient<IUserClient, UserHttpClient>()
                 .AddHttpMessageHandler<TestMessageHandler>()
