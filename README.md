@@ -1,12 +1,13 @@
 # Playing with HttpClientFactory
-This small application is an example to use the built-in [HttpClientFactory](https://docs.microsoft.com/en-ie/aspnet/core/fundamentals/http-requests?view=aspnetcore-3.0) in ASP.NET Core.
 
-[Separate branch](https://github.com/19balazs86/PlayingWithHttpClientFactory/tree/netcoreapp2.2) with the .NET Core 2.2 version.
+- This small application demonstrates how to use the built-in [HttpClientFactory](https://docs.microsoft.com/en-ie/aspnet/core/fundamentals/http-requests) in ASP.NET Core
 
-#### What is HttpClientFactory?
+## What is HttpClientFactory?
+
 - `HttpClientFactory` provides a central location to configure and create `HttpClient` instances.
 
-#### Resources
+## Resources
+
 - [Some blog posts about HttpClientFactory](https://www.stevejgordon.co.uk/tag/httpclientfactory) 📓*Steve Gorgon*
 - [Let’s talk about HTTP in .NET Core](https://www.youtube.com/watch?v=Ssii6AwF7Uc) 📽️*45min - Steve Gorgon*
 - [You are (probably) using HttpClient wrong](https://josefottosson.se/you-are-probably-still-using-httpclient-wrong-and-it-is-destabilizing-your-software) 📓*Josef Ottosson*
@@ -15,7 +16,7 @@ This small application is an example to use the built-in [HttpClientFactory](htt
 - [How to mock HttpClient in unit tests](https://gingter.org/2018/07/26/how-to-mock-httpclient-in-your-net-c-unit-tests) 📓*Gingter Ale*
 - [Delegating handlers to extend HttpClient](https://code-maze.com/aspnetcore-using-delegating-handlers-to-extend-httpclient) 📓*Code-Maze*
 
-#### Unit Test for mocking HttpClient
+## Unit Test for mocking HttpClient
 
 - Using Moq and Moq.Protected
 - Using the [MockHttp](https://github.com/richardszalay/mockhttp) package 👤*Richard Szalay*
@@ -26,9 +27,8 @@ This small application is an example to use the built-in [HttpClientFactory](htt
   - [Troubleshooting](https://cezarypiatek.github.io/post/mocking-outgoing-http-requests-p2) - WireMockInspector 📓*Cezary Piątek*
   - [Why my WireMock mocks aren't working?](https://blog.genezini.com/p/why-my-wiremock-mocks-arent-working) 📓*Daniel Genezini*
   
+## Polly
 
-
-#### Polly
 - [Polly docs](https://www.pollydocs.org/) 📓*Official*
 - 📚Microsoft-learn
   - [Build resilient HTTP applications](https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience)
@@ -42,7 +42,8 @@ This small application is an example to use the built-in [HttpClientFactory](htt
 
 > In the example, I did not use the [Flurl](https://flurl.io) as fluent URL builder and HTTP client library. Worth to check the following article: [Consuming GitHub API (REST) With Flurl](https://code-maze.com/consuming-github-api-rest-with-flurl).
 
-#### Configuration
+## Configuration
+
 ```csharp
 private static void configureResilienceHandler(ResiliencePipelineBuilder<HttpResponseMessage> pipelineBuilder)
 {
