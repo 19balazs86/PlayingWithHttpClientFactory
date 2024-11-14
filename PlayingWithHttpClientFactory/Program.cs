@@ -25,7 +25,8 @@ public static class Program
             services.AddHttpClient<IUserClient, UserHttpClient>()
                 .AddHttpMessageHandler<TestMessageHandler>()
                 .ConfigureCustomLogging()
-                //.AddStandardResilienceHandler()
+                // .AddTransientHttpErrorPolicy(p => p.RetryAsync(3)) // Non-Resilience version: Install-Package Microsoft.Extensions.Http.Polly
+                // .AddStandardResilienceHandler()
                 .AddResilienceHandler("user-pipeline", configureResilienceHandler);
 
             // Configure: Default values for HttpClient
